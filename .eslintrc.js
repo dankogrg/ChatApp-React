@@ -1,5 +1,5 @@
 module.exports = {
-    parser: '@typescript-eslint/parser @babel/eslint-parser', // Specifies the ESLint parser
+    parser: '@typescript-eslint/parser', // Specifies the ESLint parser
     extends: ['prettier'],
     parserOptions: {
         ecmaVersion: 2020, // Allows for the parsing of modern ECMAScript features

@@ -8,6 +8,8 @@ const ChatInput = ({ makeMessages, user, chatLines }: any) => {
         verticalAlign: 'middle',
         marginTop: '10px',
     };
+    console.log(chatLines);
+
     const { userName, color } = user;
     const [message, setMessage] = useState('');
 
@@ -21,7 +23,7 @@ const ChatInput = ({ makeMessages, user, chatLines }: any) => {
             setMessage('');
             return;
         }
-        let chatLIne: Object = {
+        const chatLIne: Object = {
             userName: userName,
             color: color,
             message: message,

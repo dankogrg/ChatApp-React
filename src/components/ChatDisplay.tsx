@@ -2,6 +2,8 @@ import React from 'react';
 import '../style.css';
 
 const ChatDisplay = ({ user, chatLInes }: any) => {
+    console.log(chatLInes);
+
     return (
         <>
             <div className="displayStyle">

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Button, FloatingLabel, Form, Modal } from 'react-bootstrap';
 
-const CreateUser = ({ shownModal, hideModal, user, makeUser }: any) => {
+const CreateUser = ({ shownModal, hideModal, makeUser }: any) => {
     const [userName, setUserName] = useState('');
     const [color, setColor] = useState('#0000ff');
 
@@ -10,9 +10,13 @@ const CreateUser = ({ shownModal, hideModal, user, makeUser }: any) => {
 
     const handleSubmit = (e: any) => {
         e.preventDefault();
-        user.userName = userName;
-        user.color = color;
+        const user = {
+            userName: userName,
+            color: color,
+        };
         makeUser(user);
+        console.log(user);
+
         hideModal();
     };
     const handleHideModal = () => hideModal();
