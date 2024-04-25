@@ -1,7 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Form } from 'react-bootstrap';
 
-const ChatInput = ({ user, onSendMessage }: any) => {
+import TypingIndicator from 'typing-indicator';
+
+let typingIndicator = null;
+
+const ChatInput = ({ user, onSendMessage, onChangeTypingState }) => {
     const inputStyle = {
         height: '10vh',
         display: 'flex',
@@ -12,25 +16,33 @@ const ChatInput = ({ user, onSendMessage }: any) => {
     const { userName, color } = user;
     const [message, setMessage] = useState('');
 
-    const handleMessage = (e: any) => {
+    useEffect(() => {
+        if (typingIndicator === null) {
+            typingIndicator = new TypingIndicator();
+            typingIndicator.listen((isTyping) => onChangeTypingState(isTyping));
+        }
+    });
+
+    const handleMessage = (e) => {
+        const text = e.target.value;
+        typingIndicator.onChange(text);
         setMessage(e.target.value);
     };
-    const handleSubmit = (e: any) => {
+    const handleSubmit = (e) => {
         e.preventDefault();
         if (e.key != 'Enter' && e.key != undefined) return;
         if (!message.trim()) {
             setMessage('');
             return;
         }
-        const chatLIne: Object = {
+        const chatLIne = {
             userName: userName,
             color: color,
             message: message,
         };
+        setMessage('');
 
         onSendMessage(chatLIne);
-
-        setMessage('');
     };
 
     return (
@@ -38,7 +50,7 @@ const ChatInput = ({ user, onSendMessage }: any) => {
             <Form
                 style={inputStyle}
                 onSubmit={handleSubmit}
-                onKeyUpCapture={handleSubmit}
+                onKeyUp={handleSubmit}
             >
                 <Form.Label id="message" className="mb-3"></Form.Label>
                 <Form.Control

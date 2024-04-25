@@ -2,6 +2,8 @@ import React from 'react';
 import '../style.css';
 
 const ChatDisplay = ({ user, chatLInes }: any) => {
+    console.log(chatLInes);
+
     return (
         <>
             <div className="displayStyle">
@@ -15,7 +17,7 @@ const ChatDisplay = ({ user, chatLInes }: any) => {
                                     : 'reversemessage'
                             }
                             style={{
-                                backgroundImage: `linear-gradient(#ffffff, ${chatLIne.data.color}) `,
+                                backgroundImage: `linear-gradient(${chatLIne.data.color}, #ffffff) `,
                             }}
                         >
                             <p>

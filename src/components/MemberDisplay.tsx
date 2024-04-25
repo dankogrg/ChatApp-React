@@ -2,8 +2,6 @@ import React from 'react';
 import '../style2.css';
 
 const MemberDisplay = ({ members, user }: any) => {
-    console.log(members, user);
-
     function Member({ id, clientData }: any, isMe: Boolean) {
         const { userName, color } = clientData;
         return (

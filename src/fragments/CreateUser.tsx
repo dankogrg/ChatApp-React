@@ -1,14 +1,7 @@
 import React, { useState } from 'react';
 import { Button, FloatingLabel, Form, Modal } from 'react-bootstrap';
-import { Await } from 'react-router-dom';
 
-const CreateUser = ({
-    shownModal,
-    hideModal,
-    makeUser,
-    triggerScalderone,
-    onSendMessage,
-}: any) => {
+const CreateUser = ({ shownModal, hideModal, makeUser }: any) => {
     const [userName, setUserName] = useState('');
     const [color, setColor] = useState('#0000ff');
 
@@ -28,7 +21,7 @@ const CreateUser = ({
     };
 
     return (
-        <Modal show={shownModal} onHide={hideModal}>
+        <Modal show={shownModal} onHide={hideModal} backdrop="static">
             <Modal.Header>
                 <Modal.Title>Create username</Modal.Title>
             </Modal.Header>

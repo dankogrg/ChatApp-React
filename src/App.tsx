@@ -4,15 +4,21 @@ import ChatDisplay from './components/ChatDisplay';
 import ChatInput from './fragments/ChatInput';
 import { Container } from 'react-bootstrap';
 import MemberDisplay from './components/MemberDisplay';
+import TypingIndicator from './components/TypingIndicator';
 
 let drone: any = null;
 
+declare global {
+    interface Window {
+        Scaledrone: (a: any) => void;
+    }
+}
+let Scaledrone = window.Scaledrone as any;
+
 const App = () => {
     const [shownModal, setShownModal] = useState<Boolean>(true);
-    const [user, setUser]: any = useState({
-        userName: 'Danko',
-        color: 'ff0000',
-    });
+    const [user, setUser]: any = useState({});
+
     const [chatLines, setChatLInes]: any = useState([]);
     const [members, setMembers]: any = useState([]);
 
@@ -21,10 +27,9 @@ const App = () => {
     const membersRef: any = useRef();
     membersRef.current = members;
     const meRef: any = useRef();
-    meRef.current = user;
 
     function connectToScaledrone() {
-        drone = new window.Scaledrone('7e11H1xcHoFAEHQc', {
+        drone = new Scaledrone('7e11H1xcHoFAEHQc', {
             data: meRef.current,
         });
         drone.on('open', (error: any) => {
@@ -39,14 +44,22 @@ const App = () => {
 
         room.on('message', (message: any) => {
             const { data, member } = message;
-            setChatLInes([...messagesRef.current, message]);
+            if (typeof data === 'object' && typeof data.typing === 'boolean') {
+                const newMewmbers = [...membersRef.current];
+                const index = newMewmbers.findIndex((m) => m.id === member.id);
+                newMewmbers[index].typing = data.typing;
+
+                setMembers(newMewmbers);
+            } else {
+                setChatLInes([...messagesRef.current, message]);
+                // localStorage.setItem('chatLines', JSON.stringify(chatLines));
+            }
         });
         room.on('members', (members: any) => {
             setMembers(members);
         });
         room.on('member_join', (member: any) => {
             setMembers([...membersRef.current, member]);
-            console.log(member);
         });
         room.on('member_leave', ({ id }: any) => {
             const index = membersRef.current.findIndex((m: any) => m.id === id);
@@ -57,9 +70,9 @@ const App = () => {
     }
 
     useEffect(() => {
-        setChatLInes(JSON.parse(localStorage.getItem('chatLines')! ?? '[]'));
+        setChatLInes(JSON.parse(localStorage.getItem('chatLines') ?? '[]'));
         const records = JSON.parse(localStorage.getItem('user')!);
-        setUser(records ?? {});
+        setUser(records ?? '{}');
 
         if (!records) {
             setShownModal(true);
@@ -68,9 +81,6 @@ const App = () => {
             if (drone === null) {
                 connectToScaledrone();
             }
-        }
-        if (drone === null) {
-            connectToScaledrone();
         }
     }, []);
 
@@ -81,22 +91,24 @@ const App = () => {
         });
     }
 
-    const makeUser = (membera: any) => {
-        setUser(membera);
-
-        // localStorage.setItem('user', JSON.stringify(member));
-    };
-    const triggerScalderone = () => {
+    const makeUser = (user: any) => {
+        meRef.current = user;
         if (drone === null) {
             connectToScaledrone();
         }
+
+        // localStorage.setItem('user', JSON.stringify(user));
     };
 
     const makeMessages = (chatLines: any) => {
         setChatLInes(chatLines);
-
-        // localStorage.setItem('chatLines', JSON.stringify(chatLines));
     };
+    function onChangeTypingState(isTyping: any) {
+        drone.publish({
+            room: 'observable-room',
+            message: { typing: isTyping },
+        });
+    }
 
     const hideModal = () => setShownModal(false);
 
@@ -105,11 +117,15 @@ const App = () => {
             <Container>
                 <MemberDisplay members={members} user={user} />
                 <ChatDisplay chatLInes={chatLines} user={user} />
+                <TypingIndicator
+                    members={members.filter(
+                        (m: any) => m.typing && m.id !== user.id,
+                    )}
+                />
                 <ChatInput
-                    makeMessages={makeMessages}
                     user={user}
-                    chatLines={chatLines}
                     onSendMessage={onSendMessage}
+                    onChangeTypingState={onChangeTypingState}
                 />
             </Container>
             <CreateUser
@@ -117,7 +133,6 @@ const App = () => {
                 shownModal={shownModal}
                 hideModal={hideModal}
                 makeUser={makeUser}
-                triggerScalderone={triggerScalderone}
                 onSendMessage={onSendMessage}
             />
         </>
