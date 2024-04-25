@@ -2,8 +2,6 @@ import React from 'react';
 import '../style.css';
 
 const ChatDisplay = ({ user, chatLInes }: any) => {
-    console.log(chatLInes);
-
     return (
         <>
             <div className="displayStyle">
@@ -12,20 +10,25 @@ const ChatDisplay = ({ user, chatLInes }: any) => {
                         <div
                             key={index}
                             className={
-                                chatLIne.userName == user.userName
+                                chatLIne.data.userName == user.userName
                                     ? 'messagestyle'
                                     : 'reversemessage'
                             }
                             style={{
-                                backgroundImage: `linear-gradient(#ffffff, ${chatLIne.color}) `,
+                                backgroundImage: `linear-gradient(#ffffff, ${chatLIne.data.color}) `,
                             }}
                         >
                             <p>
                                 <small>
-                                    <u>{chatLIne.userName + ':'}</u>
+                                    <u>
+                                        {chatLIne.data.userName}
+                                        {chatLIne.data.userName == user.userName
+                                            ? ' (you):'
+                                            : ':'}
+                                    </u>
                                 </small>
                                 <br />
-                                {chatLIne.message}
+                                {chatLIne.data.message}
                             </p>
                         </div>
                     ))}
@@ -34,5 +37,19 @@ const ChatDisplay = ({ user, chatLInes }: any) => {
         </>
     );
 };
+function Message({ member, data, id }: any, me: any) {
+    const { username, color } = member.clientData;
+    const messageFromMe = member.id === me.id;
+    const className = '';
+    return (
+        <li key={id} className={className}>
+            <span className="" style={{ backgroundColor: color }} />
+            <div className="">
+                <div className="">{username}</div>
+                <div className="">{data}</div>
+            </div>
+        </li>
+    );
+}
 
 export default ChatDisplay;

@@ -1,14 +1,13 @@
 import React, { useState } from 'react';
 import { Button, Form } from 'react-bootstrap';
 
-const ChatInput = ({ makeMessages, user, chatLines }: any) => {
+const ChatInput = ({ user, onSendMessage }: any) => {
     const inputStyle = {
         height: '10vh',
         display: 'flex',
         verticalAlign: 'middle',
         marginTop: '10px',
     };
-    console.log(chatLines);
 
     const { userName, color } = user;
     const [message, setMessage] = useState('');
@@ -28,10 +27,8 @@ const ChatInput = ({ makeMessages, user, chatLines }: any) => {
             color: color,
             message: message,
         };
-        console.log(chatLIne);
 
-        makeMessages([...chatLines, chatLIne]);
-        console.log(chatLines);
+        onSendMessage(chatLIne);
 
         setMessage('');
     };
