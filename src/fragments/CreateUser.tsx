@@ -4,6 +4,9 @@ import { Button, FloatingLabel, Form, Modal } from 'react-bootstrap';
 const CreateUser = ({ shownModal, hideModal, makeUser }: any) => {
     const [userName, setUserName] = useState('');
     const [color, setColor] = useState('#0000ff');
+    const date: string = String(
+        parseInt(String(new Date().getTime() * Math.random())),
+    );
 
     const handleUserName = (e: any) => setUserName(e.target.value);
     const handleColor = (e: any) => setColor(e.target.value);
@@ -13,10 +16,9 @@ const CreateUser = ({ shownModal, hideModal, makeUser }: any) => {
         const member = {
             userName: userName,
             color: color,
+            userId: date,
         };
-
         makeUser(member);
-
         hideModal();
     };
 

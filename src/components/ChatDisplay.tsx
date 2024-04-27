@@ -2,8 +2,6 @@ import React from 'react';
 import '../style.css';
 
 const ChatDisplay = ({ user, chatLInes }: any) => {
-    console.log(chatLInes);
-
     return (
         <>
             <div className="displayStyle">
@@ -12,7 +10,7 @@ const ChatDisplay = ({ user, chatLInes }: any) => {
                         <div
                             key={index}
                             className={
-                                chatLIne.data.userName == user.userName
+                                chatLIne.member.clientData.userId == user.userId
                                     ? 'messagestyle'
                                     : 'reversemessage'
                             }
@@ -24,7 +22,8 @@ const ChatDisplay = ({ user, chatLInes }: any) => {
                                 <small>
                                     <u>
                                         {chatLIne.data.userName}
-                                        {chatLIne.data.userName == user.userName
+                                        {chatLIne.member.clientData.userId ==
+                                        user.userId
                                             ? ' (you):'
                                             : ':'}
                                     </u>

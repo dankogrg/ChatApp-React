@@ -44,15 +44,16 @@ const App = () => {
 
         room.on('message', (message: any) => {
             const { data, member } = message;
+
             if (typeof data === 'object' && typeof data.typing === 'boolean') {
                 const newMewmbers = [...membersRef.current];
                 const index = newMewmbers.findIndex((m) => m.id === member.id);
                 newMewmbers[index].typing = data.typing;
-
                 setMembers(newMewmbers);
             } else {
-                setChatLInes([...messagesRef.current, message]);
-                // localStorage.setItem('chatLines', JSON.stringify(chatLines));
+                const messages = [...messagesRef.current, message];
+                setChatLInes(messages);
+                localStorage.setItem('chatLines', JSON.stringify(messages));
             }
         });
         room.on('members', (members: any) => {
@@ -73,11 +74,12 @@ const App = () => {
         setChatLInes(JSON.parse(localStorage.getItem('chatLines') ?? '[]'));
         const records = JSON.parse(localStorage.getItem('user')!);
         setUser(records ?? '{}');
-
         if (!records) {
             setShownModal(true);
         } else {
             setShownModal(false);
+            meRef.current = records;
+
             if (drone === null) {
                 connectToScaledrone();
             }
@@ -96,13 +98,9 @@ const App = () => {
         if (drone === null) {
             connectToScaledrone();
         }
-
-        // localStorage.setItem('user', JSON.stringify(user));
+        localStorage.setItem('user', JSON.stringify(user));
     };
 
-    const makeMessages = (chatLines: any) => {
-        setChatLInes(chatLines);
-    };
     function onChangeTypingState(isTyping: any) {
         drone.publish({
             room: 'observable-room',
